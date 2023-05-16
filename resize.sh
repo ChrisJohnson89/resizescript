@@ -2,7 +2,7 @@
 MEM=$(free -g|sed -n 2p|awk '{print $2}')
 
 # setParams elastic innodb redis_sess redis_cache redis_fpc varnish
-function setParams() {
+function setParams(){
   ELASTICSEARCH=$1
   INNODB=$2
   REDIS_SESS=$3
