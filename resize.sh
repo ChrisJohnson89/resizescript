@@ -1,4 +1,5 @@
 #!/bin/bash
+
 MEM=$(free -g|sed -n 2p|awk '{print $2}')
 
 # setParams elastic innodb redis_sess redis_cache redis_fpc varnish
@@ -23,7 +24,7 @@ fi
 
 #elasticsearch
 echo "ELASTICSEARCH: "
-cd /etc/elasticsearch/jvm.options.d/ && rm -i * .* 
+cd /etc/elasticsearch/jvm.options.d/ && rm -i /etc/elasticsearch/jvm.options.d/.* 
 cd /etc/elasticsearch/jvm.options.d/ && echo -Xm{s,x}$ELASTICSEARCH|awk '$1 = $1' OFS="\n" > mem_allocation.options
 cat /etc/elasticsearch/jvm.options.d/mem_allocation.options
 
