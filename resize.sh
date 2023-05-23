@@ -1,5 +1,4 @@
 #!/bin/bash
-
 MEM=$(free -g|sed -n 2p|awk '{print $2}')
 
 # setParams elastic innodb redis_sess redis_cache redis_fpc varnish
@@ -24,7 +23,7 @@ fi
 
 #elasticsearch
 echo "ELASTICSEARCH: "
-cd /etc/elasticsearch/jvm.options.d/ && rm -i /etc/elasticsearch/jvm.options.d/.* 
+cd /etc/elasticsearch/jvm.options.d/ && rm -i * .* 
 cd /etc/elasticsearch/jvm.options.d/ && echo -Xm{s,x}$ELASTICSEARCH|awk '$1 = $1' OFS="\n" > mem_allocation.options
 cat /etc/elasticsearch/jvm.options.d/mem_allocation.options
 
@@ -36,7 +35,11 @@ if [ -f "/etc/mysql/mysql.conf.d/mysqld.cnf" ]; then
   echo "  BEFORE: "
   grep -E "^innodb_buffer_pool_size.*=|[^#]innodb_buffer_pool_size.*=" /etc/mysql/mysql.conf.d/mysqld.cnf
   POOL_SIZE=$(grep -E "^innodb_buffer_pool_size.*=|[^#]innodb_buffer_pool_size.*=" /etc/mysql/mysql.conf.d/mysqld.cnf|grep -o [[:digit:]])
-  [ $LIMIT -gt $POOL_SIZE ] && sed -i -E "s/^innodb_buffer_pool_size.*=.*|[^#]innodb_buffer_pool_size.*=.*/innodb_buffer_pool_size = $INNODB/" /etc/mysql/mysql.conf.d/mysqld.cnf
+  if [ ! -z $POOL_SIZE ];then
+    [ $LIMIT -gt $POOL_SIZE ] && sed -i -E "s/^innodb_buffer_pool_size.*=.*|[^#]innodb_buffer_pool_size.*=.*/innodb_buffer_pool_size = $INNODB/" /etc/mysql/mysql.conf.d/mysqld.cnf
+  else
+    echo "innodb_buffer_pool_size = $INNODB" >> /etc/mysql/mysql.conf.d/mysqld.cnf
+  fi
   echo "  AFTER: "
   grep -E "^innodb_buffer_pool_size.*=|[^#]innodb_buffer_pool_size.*=" /etc/mysql/mysql.conf.d/mysqld.cnf
 fi
@@ -45,6 +48,11 @@ if [ -f "/etc/mysql/mariadb.conf.d/50-server.cnf" ]; then
   echo "  BEFORE: "
   grep -E "^innodb_buffer_pool_size.*=|[^#]innodb_buffer_pool_size.*=" /etc/mysql/mariadb.conf.d/50-server.cnf
   POOL_SIZE=$(grep -E "^innodb_buffer_pool_size.*=|[^#]innodb_buffer_pool_size.*=" /etc/mysql/mariadb.conf.d/50-server.cnf|grep -o [[:digit:]])
+  if [ ! -z $POOL_SIZE ];then
+    [ $LIMIT -gt $POOL_SIZE ] && sed -i -E "s/^innodb_buffer_pool_size.*=.*|[^#]innodb_buffer_pool_size.*=.*/innodb_buffer_pool_size = $INNODB/" /etc/mysql/mariadb.conf.d/50-server.cnf
+  else
+    echo "innodb_buffer_pool_size = $INNODB" >> /etc/mysql/mariadb.conf.d/50-server.cnf
+  fi
   [ $LIMIT -gt $POOL_SIZE ] && sed -i -E "s/^innodb_buffer_pool_size.*=.*|[^#]innodb_buffer_pool_size.*=.*/innodb_buffer_pool_size = $INNODB/" /etc/mysql/mariadb.conf.d/50-server.cnf
   echo "  AFTER: "
   grep -E "^innodb_buffer_pool_size.*=|[^#]innodb_buffer_pool_size.*=" /etc/mysql/mariadb.conf.d/50-server.cnf
