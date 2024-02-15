@@ -96,10 +96,6 @@ for package in "mysql" "mariadb" "percona" "elasticsearch" "varnish"; do
     fi
 done
 
-apt-mark hold mysql* mariadb* percona* elasticsearch* varnish* || { echo "Failed to hold specified packages."; exit 1; }
-apt-get update || { echo "Failed to update packages."; exit 1; }
-apt-get upgrade -y || { echo "Failed to upgrade packages."; exit 1; }
-
 echo "Dumping firewall rules..."
 iptables-save > /root/iptables.save || { echo "Failed to dump firewall rules."; exit 1; }
 echo
