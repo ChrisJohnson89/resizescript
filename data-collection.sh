@@ -82,11 +82,8 @@ echo "------------------"
 grep nfs /etc/fstab || echo "No NFS entries found in /etc/fstab."
 echo
 
-echo "Please enter the server type (Master, Sql, Node):"
-read SERVER_TYPE
-
 echo "------------------"
-echo "Updating packages and managing holds..."
+echo "managing holds..."
 echo "------------------"
 apt-mark showhold || { echo "Failed to list held packages."; exit 1; }
 
