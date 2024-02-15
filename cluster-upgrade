@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Set Redis repository configuration
-echo "" > /etc/apt/sources.list.d/redis.list
-echo "deb http://archive.ubuntu.com/ubuntu focal main universe" >> /etc/apt/sources.list.d/redis.list
+echo "" > /etc/apt/sources.list.d/redis.list || echo "Redis Not Found."
+echo "deb http://archive.ubuntu.com/ubuntu focal main universe" >> /etc/apt/sources.list.d/redis.list || echo "Redis Not Found."
 
 echo "------------------"
 echo "Changing Password"
