@@ -96,6 +96,9 @@ for package in "mysql" "mariadb" "percona" "elasticsearch" "varnish"; do
     fi
 done
 
+echo "------------------"
 echo "Dumping firewall rules..."
+echo "------------------"
 iptables-save > /root/iptables.save || { echo "Failed to dump firewall rules."; exit 1; }
+echo "/root/iptables.save"
 echo
